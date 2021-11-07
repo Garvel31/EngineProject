@@ -1,2 +1,4 @@
-package ru.pobeda;public interface FuelExeptionHandler {
+package ru.pobeda;
+
+public @interface FuelExeptionHandler {
 }

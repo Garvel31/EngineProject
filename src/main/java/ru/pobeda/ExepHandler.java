@@ -1,19 +1,31 @@
 package ru.pobeda;
 
+
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.stereotype.Component;
 
 
+@EnableAspectJAutoProxy
 @Aspect
-public class ControllerAdvisor {
+@Component
+public class ExepHandler {
 
-    @Pointcut("@annotation(ru.pobeda.FuelExeptionHandler)")
-    public void callAtAnnotatedMethods() {}
 
-    @AfterThrowing ("callAtAnnotatedMethods()")
-        public String doAfterEx(ProceedingJoinPoint pjp) throws Throwable{
-        return "redirect:/errors";
+    @Around("@annotation(ru.pobeda.FuelExeptionHandler) && target(controller)")
+    public String handleException(ProceedingJoinPoint jp, Object controller) throws Throwable {
+        String view = null;
+
+        try {
+            view = (String) jp.proceed();
+        } catch (Exception e) {
+
+            return "errors";
+        }
+
+        return view;
     }
+
 }
